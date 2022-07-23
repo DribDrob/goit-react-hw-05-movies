@@ -1,16 +1,43 @@
+import { lazy } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import { SharedLayout } from './SharedLayout/SharedLayout';
+
+const createAsyncComponent = path => lazy(() => import(path));
+
+const Home = createAsyncComponent('../pages/Home');
+const Movies = createAsyncComponent('../pages/Movies');
+const MovieDetails = createAsyncComponent('../pages/MovieDetails');
+const Cast = createAsyncComponent('./Cast');
+const Reviews = createAsyncComponent('./Reviews');
+
 export const App = () => {
   return (
-    <div
-      style={{
-        height: '100vh',
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        fontSize: 40,
-        color: '#010101'
-      }}
-    >
-      React homework template
-    </div>
+    <>
+      <Routes>
+        <Route path="/" element={<SharedLayout />}>
+          <Route index element={<Home />} />
+          <Route path="movies" element={<Movies />} />
+          <Route path="movies/:movieId" element={<MovieDetails />}>
+            <Route path="cast" element={<Cast />} />
+            <Route path="reviews" element={<Reviews />} />
+          </Route>
+          <Route path="*" element={<Home />} />
+        </Route>
+      </Routes>
+      <ToastContainer autoClose={3000} />
+    </>
   );
 };
+
+// Маршруты
+// В приложении должны быть следующие маршруты. Если пользователь зашел по несуществующему маршруту, его необходимо перенаправлять на домашнюю страницу.
+
+// '/' - компонент Home, домашняя страница со списком популярных кинофильмов.
+// '/movies' - компонент Movies, страница поиска фильмов по ключевому слову.
+// '/movies/:movieId' - компонент MovieDetails, страница с детальной информацией о кинофильме.
+// /movies/:movieId/cast - компонент Cast, информация о актерском составе. Рендерится на странице MovieDetails.
+// /movies/:movieId/reviews - компонент Reviews, информация об обзорах. Рендерится на странице MovieDetails.
+
+// Code Splitting (разделение кода)
+// Добавь асинхронную загрузку JS-кода для маршрутов приложения используя React.lazy() и <Suspense>.
