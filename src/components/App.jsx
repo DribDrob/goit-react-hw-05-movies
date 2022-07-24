@@ -3,13 +3,11 @@ import { Route, Routes } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import { SharedLayout } from './SharedLayout/SharedLayout';
 
-const createAsyncComponent = path => lazy(() => import(path));
-
-const Home = createAsyncComponent('../pages/Home');
-const Movies = createAsyncComponent('../pages/Movies');
-const MovieDetails = createAsyncComponent('../pages/MovieDetails');
-const Cast = createAsyncComponent('./Cast/Cast');
-const Reviews = createAsyncComponent('./Reviews/Reviews');
+const Home = lazy(() => import('../pages/Home'));
+const Movies = lazy(() => import('../pages/Movies'));
+const MovieDetails = lazy(() => import('../pages/MovieDetails'));
+const Cast = lazy(() => import('./Cast/Cast'));
+const Reviews = lazy(() => import('./Reviews/Reviews'));
 
 export const App = () => {
   return (

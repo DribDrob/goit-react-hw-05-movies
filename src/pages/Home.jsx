@@ -1,12 +1,16 @@
 import { useState, useEffect, Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { getTrendingMovies } from 'services/themoviedbAPI';
+import { toast } from 'react-toastify';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
+  const location = useLocation();
 
   useEffect(() => {
-    getTrendingMovies().then(setTrendingMovies);
+    getTrendingMovies()
+      .then(setTrendingMovies)
+      .catch(error => toast.error('Something went wrong. Please try again.'));
   }, []);
 
   return (
@@ -18,7 +22,9 @@ const Home = () => {
           {trendingMovies.map(({ id, title }) => {
             return (
               <li key={id}>
-                <Link to={`movies/${id}`}>{title}</Link>
+                <Link to={`movies/${id}`} state={{ from: location }}>
+                  {title}
+                </Link>
               </li>
             );
           })}

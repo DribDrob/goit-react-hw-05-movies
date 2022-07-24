@@ -1,6 +1,7 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useState, useEffect, useSearchParams, Suspense } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, Suspense } from 'react';
+import { Link, useSearchParams, useLocation } from 'react-router-dom';
+
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 import { getSearchedMovies } from 'services/themoviedbAPI';
@@ -15,21 +16,25 @@ const initialValues = {
 };
 
 const Movies = () => {
-  // const [moviesQuery, setMoviesQuery] = useState('');
   const [searchParams, setSearchParams] = useSearchParams();
   const [searchedMovies, setSearchedMovies] = useState([]);
   const query = searchParams.get('query') ?? '';
+  const location = useLocation();
 
   const handleSubmit = ({ query }, { resetForm }) => {
     if (query.trim() === '') {
       toast.error('Please, enter the search query.', { theme: 'dark' });
       return;
     }
-    setSearchParams({ query: query });
+    setSearchParams(query !== '' ? { query: query } : {});
     resetForm();
   };
   useEffect(() => {
-    getSearchedMovies(query).then(setSearchedMovies);
+    if (query) {
+      getSearchedMovies(query)
+        .then(setSearchedMovies)
+        .catch(error => toast.error('Something went wrong. Please try again.'));
+    }
   }, [query]);
 
   return (
@@ -53,13 +58,16 @@ const Movies = () => {
       </Formik>
       <Suspense fallback={<div>Loading movie list...</div>}>
         <ul>
-          {searchedMovies.map(({ id, title }) => {
-            return (
-              <li key={id}>
-                <Link to={`${id}`}>{title}</Link>
-              </li>
-            );
-          })}
+          {searchedMovies &&
+            searchedMovies.map(({ id, title }) => {
+              return (
+                <li key={id}>
+                  <Link to={`${id}`} state={{ from: location }}>
+                    {title}
+                  </Link>
+                </li>
+              );
+            })}
         </ul>
       </Suspense>
     </main>

@@ -1,31 +1,39 @@
-import { useState, useEffect, useParams } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { getMovieCast } from 'services/themoviedbAPI';
+import { toast } from 'react-toastify';
+import defaultCastPhoto from 'images/cast-photo.png';
 
 const Cast = () => {
-  const [movieCast, setMovieCast] = useState(null);
+  const [movieCast, setMovieCast] = useState([]);
   const { movieId } = useParams();
 
   useEffect(() => {
-    getMovieCast(Number(movieId)).then(setMovieCast);
+    getMovieCast(Number(movieId))
+      .then(setMovieCast)
+      .catch(error => toast.error('Something went wrong. Please try again.'));
   }, [movieId]);
 
   if (!movieCast) {
     return null;
   }
+
   return (
-    <main>
-      <ul>
-        {movieCast.map(({ id, profile_path, name, character }) => {
-          return (
-            <li key={id}>
-              <img src={profile_path} alt={name} />
-              <p>{name}</p>
-              <p>Character: {character}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </main>
+    <ul>
+      {movieCast.map(({ id, profile_path, name, character }) => {
+        const photo = profile_path
+          ? `https://image.tmdb.org/t/p/w500${profile_path}`
+          : defaultCastPhoto;
+
+        return (
+          <li key={id}>
+            <img src={photo} alt={name} width="100" />
+            <p>{name}</p>
+            <p>Character: {character}</p>
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 

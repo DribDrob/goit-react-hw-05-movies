@@ -13,7 +13,8 @@ const API_KEY = '8f517ea939a3e5bbc59bc55f9e33cbf1';
 
 export async function getTrendingMovies() {
     // https://api.themoviedb.org/3/trending/movie/day?api_key=<<api_key>>
-    return await axios.get(`/trending/movie/day/day?api_key=${API_KEY}`);
+  const {data} = await axios.get(`/trending/movie/day?api_key=${API_KEY}`);
+  return data.results;
 }
 
 export async function getSearchedMovies(query) {
@@ -24,23 +25,25 @@ export async function getSearchedMovies(query) {
         language: 'en-US',
        include_adult: false,
     });
-return await axios.get(`/search/movie?${params}`);
+    const {data} =  await axios.get(`/search/movie?${params}`);
+  return data.results;
 }
 
 export async function getMovieDetails(id) {
     // https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US
-  return await axios.get(`/movie/${id}?api_key=${API_KEY}&language=en-US`);
+  const { data } = await axios.get(`/movie/${id}?api_key=${API_KEY}&language=en-US`);
+  return data;
 }
 
 export async function getMovieCast(id) {
 // https://api.themoviedb.org/3/movie/{movie_id}/credits?api_key=<<api_key>>&language=en-US
-  const { cast } = await axios.get(`/movie/${id}/credits?api_key=${API_KEY}&language=en-US`);
-  return cast;
+   const { data } = await axios.get(`/movie/${id}/credits?api_key=${API_KEY}&language=en-US`);
+return data.cast;
 }
 
 export async function getMovieReviews(id) {
 // https://api.themoviedb.org/3/movie/{movie_id}/reviews?api_key=<<api_key>>&language=en-US&page=1
-  const {results} = await axios.get(`/movie/${id}/reviews?api_key=${API_KEY}&language=en-US`);
-  return results;
+  const { data } = await axios.get(`/movie/${id}/reviews?api_key=${API_KEY}&language=en-US`);
+  return data.results;
 }
 

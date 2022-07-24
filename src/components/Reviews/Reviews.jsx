@@ -1,4 +1,5 @@
-import { useState, useEffect, useParams } from 'react';
+import { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { getMovieReviews } from 'services/themoviedbAPI';
 
 const Reviews = () => {
@@ -10,22 +11,32 @@ const Reviews = () => {
   }, [movieId]);
 
   if (!movieReviews) {
+    return null;
+  }
+
+  if (movieReviews.length === 0) {
     return <p>We don't have any reviews for this movie.</p>;
   }
   return (
-    <main>
-      <ul>
-        {movieReviews.map(({ id, profile_path, name, character }) => {
-          return (
-            <li key={id}>
-              <img src={profile_path} alt={name} />
-              <p>{name}</p>
-              <p>Character: {character}</p>
-            </li>
-          );
-        })}
-      </ul>
-    </main>
+    <ul>
+      {movieReviews.map(({ id, author, content }) => {
+        return (
+          <li key={id}>
+            <p>Author: {author}</p>
+            <p>{content}</p>
+
+            {/* {content.length < 450 ? (
+                <p>{content}</p>
+              ) : (
+                <div>
+                  <p>{content.substring(0, 451)}</p>
+                  <button onClick={children: content.substring(451)}>...</button>
+                </div>
+              )} */}
+          </li>
+        );
+      })}
+    </ul>
   );
 };
 
