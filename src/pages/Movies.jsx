@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from 'formik';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useSearchParams, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
@@ -15,20 +15,22 @@ const initialValues = {
 };
 
 const Movies = () => {
-  const [moviesQuery, setMoviesQuery] = useState('');
+  // const [moviesQuery, setMoviesQuery] = useState('');
+  const [searchParams, setSearchParams] = useSearchParams();
   const [searchedMovies, setSearchedMovies] = useState([]);
+  const query = searchParams.get('query') ?? '';
 
   const handleSubmit = ({ query }, { resetForm }) => {
     if (query.trim() === '') {
       toast.error('Please, enter the search query.', { theme: 'dark' });
       return;
     }
-    setMoviesQuery(query);
+    setSearchParams({ query: query });
     resetForm();
   };
   useEffect(() => {
-    getSearchedMovies(moviesQuery).then(setSearchedMovies);
-  }, [moviesQuery]);
+    getSearchedMovies(query).then(setSearchedMovies);
+  }, [query]);
 
   return (
     <main>
@@ -49,15 +51,17 @@ const Movies = () => {
           <ErrorMessage name="query" />
         </Form>
       </Formik>
-      <ul>
-        {searchedMovies.map(({ id, title }) => {
-          return (
-            <li key={id}>
-              <Link to={`${id}`}>{title}</Link>
-            </li>
-          );
-        })}
-      </ul>
+      <Suspense fallback={<div>Loading movie list...</div>}>
+        <ul>
+          {searchedMovies.map(({ id, title }) => {
+            return (
+              <li key={id}>
+                <Link to={`${id}`}>{title}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </Suspense>
     </main>
   );
 };

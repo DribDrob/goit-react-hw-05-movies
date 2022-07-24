@@ -7,7 +7,7 @@ const MovieDetails = () => {
   const [movieDetails, setMovieDetails] = useState(null);
   const { movieId } = useParams();
   useEffect(() => {
-    getMovieDetails(movieId).then(setMovieDetails);
+    getMovieDetails(Number(movieId)).then(setMovieDetails);
   }, [movieId]);
 
   //   const location = useLocation();

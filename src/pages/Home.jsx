@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { Link } from 'react-router-dom';
 import { getTrendingMovies } from 'services/themoviedbAPI';
 
@@ -13,15 +13,17 @@ const Home = () => {
     <main>
       <h1>Trending today</h1>
       {/* //TrendMoviesList movies={trendingMovies}*/}
-      <ul>
-        {trendingMovies.map(({ id, title }) => {
-          return (
-            <li key={id}>
-              <Link to={`movies/${id}`}>{title}</Link>
-            </li>
-          );
-        })}
-      </ul>
+      <Suspense fallback={<div>Loading movie list...</div>}>
+        <ul>
+          {trendingMovies.map(({ id, title }) => {
+            return (
+              <li key={id}>
+                <Link to={`movies/${id}`}>{title}</Link>
+              </li>
+            );
+          })}
+        </ul>
+      </Suspense>
     </main>
   );
 };

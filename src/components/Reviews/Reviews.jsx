@@ -6,7 +6,7 @@ const Reviews = () => {
   const { movieId } = useParams();
 
   useEffect(() => {
-    getMovieReviews(movieId).then(setMovieReviews);
+    getMovieReviews(Number(movieId)).then(setMovieReviews);
   }, [movieId]);
 
   if (!movieReviews) {

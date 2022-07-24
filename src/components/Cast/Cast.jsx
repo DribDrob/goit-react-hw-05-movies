@@ -6,9 +6,12 @@ const Cast = () => {
   const { movieId } = useParams();
 
   useEffect(() => {
-    getMovieCast(movieId).then(setMovieCast);
+    getMovieCast(Number(movieId)).then(setMovieCast);
   }, [movieId]);
 
+  if (!movieCast) {
+    return null;
+  }
   return (
     <main>
       <ul>

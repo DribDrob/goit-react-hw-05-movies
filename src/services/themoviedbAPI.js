@@ -24,12 +24,12 @@ export async function getSearchedMovies(query) {
         language: 'en-US',
        include_adult: false,
     });
-return await axios.get(`/search/movie??${params}`);
+return await axios.get(`/search/movie?${params}`);
 }
 
 export async function getMovieDetails(id) {
     // https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US
-  return await axios.get(`/movie/${id}/?api_key=${API_KEY}&language=en-US`);
+  return await axios.get(`/movie/${id}?api_key=${API_KEY}&language=en-US`);
 }
 
 export async function getMovieCast(id) {

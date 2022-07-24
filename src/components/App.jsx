@@ -8,8 +8,8 @@ const createAsyncComponent = path => lazy(() => import(path));
 const Home = createAsyncComponent('../pages/Home');
 const Movies = createAsyncComponent('../pages/Movies');
 const MovieDetails = createAsyncComponent('../pages/MovieDetails');
-const Cast = createAsyncComponent('./Cast');
-const Reviews = createAsyncComponent('./Reviews');
+const Cast = createAsyncComponent('./Cast/Cast');
+const Reviews = createAsyncComponent('./Reviews/Reviews');
 
 export const App = () => {
   return (
@@ -41,3 +41,6 @@ export const App = () => {
 
 // Code Splitting (разделение кода)
 // Добавь асинхронную загрузку JS-кода для маршрутов приложения используя React.lazy() и <Suspense>.
+
+//  Функция React.lazy() отвечает за асинхронную загрузку компонента,
+//   а Suspense приостанавливает его отображение до завершения загрузки.
