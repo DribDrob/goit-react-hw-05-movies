@@ -1,8 +1,13 @@
+import { Loader } from 'components/Loader/Loader';
 import { useState, useEffect, Suspense } from 'react';
-import { useParams, useLocation, Link, Outlet } from 'react-router-dom';
+import { useParams, useLocation, Outlet } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { BackLink } from '../components/BackLink/BackLink';
 import { getMovieDetails } from '../services/themoviedbAPI';
+import MovieCard from 'components/MovieCard/MovieCard';
+import { AdditionalTitle } from './pagesStyled/Page.styled';
+import { StyledLink } from 'components/BackLink/BackLink.styled';
 
 const MovieDetails = () => {
   const [movieDetails, setMovieDetails] = useState(null);
@@ -19,33 +24,25 @@ const MovieDetails = () => {
   if (!movieDetails) {
     return null;
   }
-  const { poster_path, title, overview, genres, vote_average } = movieDetails;
-  const userScore = Math.round(vote_average * 10);
-  const poster = `https://image.tmdb.org/t/p/w500${poster_path}`;
+
   return (
     <main>
       <BackLink to={backLinkHref}>Go back</BackLink>
-      <img src={poster} alt={title} width="240" />
-      <h2>{title}</h2>
-      <p>User Score: {userScore}%</p>
-      <p>Overview</p>
-      <p>{overview}</p>
-      <p>Genres</p>
-      <p>{genres.map(g => g.name).join(' ')}</p>
-      <h3>Additional information</h3>
+      <MovieCard data={movieDetails} />
+      <AdditionalTitle>Additional information</AdditionalTitle>
       <ul>
         <li>
-          <Link to="cast" state={{ from: location.state.from }}>
+          <StyledLink to="cast" state={{ from: location.state.from }}>
             Cast
-          </Link>
+          </StyledLink>
         </li>
         <li>
-          <Link to="reviews" state={{ from: location }}>
+          <StyledLink to="reviews" state={{ from: location.state.from }}>
             Reviews
-          </Link>
+          </StyledLink>
         </li>
       </ul>
-      <Suspense fallback={<div>Loading subpage...</div>}>
+      <Suspense fallback={<Loader />}>
         <Outlet />
       </Suspense>
     </main>

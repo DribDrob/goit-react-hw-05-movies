@@ -1,7 +1,10 @@
 import { useState, useEffect, Suspense } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { getTrendingMovies } from 'services/themoviedbAPI';
 import { toast } from 'react-toastify';
+import { Loader } from 'components/Loader/Loader';
+import MovieList from 'components/MovieList/MovieList';
+import { Title } from './pagesStyled/Page.styled';
 
 const Home = () => {
   const [trendingMovies, setTrendingMovies] = useState([]);
@@ -15,20 +18,11 @@ const Home = () => {
 
   return (
     <main>
-      <h1>Trending today</h1>
-      {/* //TrendMoviesList movies={trendingMovies}*/}
-      <Suspense fallback={<div>Loading movie list...</div>}>
-        <ul>
-          {trendingMovies.map(({ id, title }) => {
-            return (
-              <li key={id}>
-                <Link to={`movies/${id}`} state={{ from: location }}>
-                  {title}
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
+      <Title>Trending today</Title>
+      <Suspense fallback={<Loader />}>
+        {trendingMovies && (
+          <MovieList data={trendingMovies} url="movies/" location={location} />
+        )}
       </Suspense>
     </main>
   );

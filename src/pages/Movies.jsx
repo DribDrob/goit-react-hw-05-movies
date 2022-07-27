@@ -1,19 +1,11 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useState, useEffect, Suspense } from 'react';
-import { Link, useSearchParams, useLocation } from 'react-router-dom';
-
+import { useSearchParams, useLocation } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import * as yup from 'yup';
+import 'react-toastify/dist/ReactToastify.css';
 import { getSearchedMovies } from 'services/themoviedbAPI';
-// import PropTypes from 'prop-types';
-
-const schema = yup.object().shape({
-  query: yup.string(),
-});
-
-const initialValues = {
-  query: '',
-};
+import { Loader } from 'components/Loader/Loader';
+import MovieList from 'components/MovieList/MovieList';
+import SearchForm from 'components/SearchForm/SearchForm';
 
 const Movies = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -21,60 +13,33 @@ const Movies = () => {
   const query = searchParams.get('query') ?? '';
   const location = useLocation();
 
-  const handleSubmit = ({ query }, { resetForm }) => {
-    if (query.trim() === '') {
-      toast.error('Please, enter the search query.', { theme: 'dark' });
-      return;
-    }
+  const handleSubmit = query => {
     setSearchParams(query !== '' ? { query: query } : {});
-    resetForm();
   };
   useEffect(() => {
     if (query) {
       getSearchedMovies(query)
-        .then(setSearchedMovies)
+        .then(movies => {
+          if (movies.length === 0) {
+            return toast.error(
+              'Sorry, there are no movies matching your search query. Please try again.'
+            );
+          }
+          setSearchedMovies(movies);
+        })
         .catch(error => toast.error('Something went wrong. Please try again.'));
     }
   }, [query]);
 
   return (
     <main>
-      <Formik
-        initialValues={initialValues}
-        validationSchema={schema}
-        onSubmit={handleSubmit}
-      >
-        <Form>
-          <Field
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search movies"
-            name="query"
-          />
-          <button type="submit">Search</button>
-          <ErrorMessage name="query" />
-        </Form>
-      </Formik>
-      <Suspense fallback={<div>Loading movie list...</div>}>
-        <ul>
-          {searchedMovies &&
-            searchedMovies.map(({ id, title }) => {
-              return (
-                <li key={id}>
-                  <Link to={`${id}`} state={{ from: location }}>
-                    {title}
-                  </Link>
-                </li>
-              );
-            })}
-        </ul>
+      <SearchForm onSubmit={handleSubmit} />
+      <Suspense fallback={<Loader />}>
+        {searchedMovies && (
+          <MovieList data={searchedMovies} url="" location={location} />
+        )}
       </Suspense>
     </main>
   );
 };
 export default Movies;
-
-// Searchbar.propTypes = {
-//   onSubmit: PropTypes.func.isRequired,
-// };

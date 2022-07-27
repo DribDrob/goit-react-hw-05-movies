@@ -1,11 +1,15 @@
-import { HiArrowLeft } from 'react-icons/hi';
+import { FaArrowLeft } from 'react-icons/fa';
 import { StyledLink } from './BackLink.styled';
+import PropTypes from 'prop-types';
 
 export const BackLink = ({ to, children }) => {
   return (
     <StyledLink to={to}>
-      <HiArrowLeft size="24" />
+      <FaArrowLeft size="12" />
       {children}
     </StyledLink>
   );
+};
+BackLink.propTypes = {
+  to: PropTypes.object.isRequired,
 };

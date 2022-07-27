@@ -7,6 +7,7 @@
 // /movies/get-movie-reviews запрос обзоров для страницы кинофильма.
 
 import axios from 'axios';
+// import { toast } from 'react-toastify';
 
 axios.defaults.baseURL = 'https://api.themoviedb.org/3';
 const API_KEY = '8f517ea939a3e5bbc59bc55f9e33cbf1';
@@ -25,7 +26,7 @@ export async function getSearchedMovies(query) {
         language: 'en-US',
        include_adult: false,
     });
-    const {data} =  await axios.get(`/search/movie?${params}`);
+  const { data } = await axios.get(`/search/movie?${params}`);
   return data.results;
 }
 

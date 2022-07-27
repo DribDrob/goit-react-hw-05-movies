@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { getMovieReviews } from 'services/themoviedbAPI';
+import { Button, CardTitle, Item, List } from './Reviews.styled';
 
 const Reviews = () => {
   const [movieReviews, setMovieReviews] = useState(null);
+  const [isFullTextOpen, setIsFullTextOpen] = useState(false);
   const { movieId } = useParams();
 
   useEffect(() => {
@@ -17,26 +19,23 @@ const Reviews = () => {
   if (movieReviews.length === 0) {
     return <p>We don't have any reviews for this movie.</p>;
   }
+
   return (
-    <ul>
+    <List>
       {movieReviews.map(({ id, author, content }) => {
         return (
-          <li key={id}>
-            <p>Author: {author}</p>
-            <p>{content}</p>
-
-            {/* {content.length < 450 ? (
-                <p>{content}</p>
-              ) : (
-                <div>
-                  <p>{content.substring(0, 451)}</p>
-                  <button onClick={children: content.substring(451)}>...</button>
-                </div>
-              )} */}
-          </li>
+          <Item key={id}>
+            <CardTitle>Author: {author}</CardTitle>
+            <p>
+              {isFullTextOpen
+                ? content
+                : content.split(' ').slice(0, 70).join(' ') + ' ...'}
+            </p>
+            <Button onClick={() => setIsFullTextOpen(true)}>Read more</Button>
+          </Item>
         );
       })}
-    </ul>
+    </List>
   );
 };
 
